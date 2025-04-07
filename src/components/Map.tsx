@@ -1,23 +1,11 @@
 // src/components/Map.tsx
 "use client"
 
-import { MapContainer, ImageOverlay, Marker, Popup, useMap } from "react-leaflet";
+import { MapContainer, ImageOverlay, Marker, Popup, useMap, Polygon, useMapEvents } from "react-leaflet";
 import { CRS, LatLngBoundsLiteral } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { Icon } from "leaflet";
-import { locations } from "@/data/locations";
-
-
-
-
-
-const mordorIcon = new Icon({
-  iconUrl: "/icons/mordor.png", // ajoute dans /public/icons/
-  iconSize: [30,45],
-  iconAnchor: [20, 40],
-  popupAnchor: [0, -40],
-});
-
+import { locations, polygonPositions, polygonAreas } from "@/data/locations";
 
 // Dimensions de l'image de la map
 const imageWidth = 1024;
@@ -29,7 +17,7 @@ const bounds: LatLngBoundsLiteral = [
     [imageHeight, imageWidth],
   ];
 
-  // Utilitaire pour forcer le centrage et bloquer les limites
+// Utilitaire pour forcer le centrage et bloquer les limites
 function SetupBounds() {
     const map = useMap();
     map.setMaxBounds(bounds); // Empêche de scroller en dehors
@@ -37,28 +25,66 @@ function SetupBounds() {
     return null;
   }
 
-export default function MyMap({ position, zoom }: MapProps) {
+// Fonction temporaire pour avoir les coordonnées au clic
+function LocationFinder() {
+  useMapEvents({
+    click: (e) => {
+      const { lat, lng } = e.latlng;
+      console.log(`Coordonnées du clic : [${lat}, ${lng}]`);
+    },
+  });
+  return null;
+}
 
+export default function MyMap() {
   return (
     <MapContainer
-        crs={CRS.Simple}
-        minZoom={1}
-        maxZoom={2} // Plus tu montes, plus tu zoomes (zoom = grossissement en CRS.Simple)
-        zoom={1}
-        center={[imageHeight / 2, imageWidth / 2]}
-        maxBounds={bounds}
-        maxBoundsViscosity={1.0} // Pour vraiment empêcher de sortir
-        className="h-full w-full"
-      >
-        <SetupBounds />
-     <ImageOverlay
-        url="/maps/mapome.png" // place ton image dans /public/maps
+      crs={CRS.Simple}
+      minZoom={1}
+      maxZoom={2}
+      zoom={1}
+      center={[imageHeight / 2, imageWidth / 2]}
+      maxBounds={bounds}
+      maxBoundsViscosity={1.0}
+      className="h-full w-full"
+    >
+      <SetupBounds />
+      <LocationFinder />
+      <ImageOverlay
+        url="/maps/mapome.png"
         bounds={bounds}
       />
-      {/* Exemple de marker sur l’image */}
-      <Marker position={[200, 820]} icon={mordorIcon}>
-          <Popup>⚔️ Mordor</Popup>
+      {locations.map((location, index) => (
+        <Marker 
+          key={index} 
+          position={location.position} 
+          icon={new Icon({
+            iconUrl: location.icon,
+            iconSize: [30, 45],
+            iconAnchor: [20, 40],
+            popupAnchor: [0, -40]
+          })}
+        >
+          <Popup>{location.description}</Popup>
         </Marker>
+      ))}
+      
+      {polygonAreas.map((area, index) => (
+        <Polygon 
+          key={index}
+          positions={area.positions}
+          pathOptions={{ 
+            color: area.color,
+            fillColor: area.fillColor,
+            fillOpacity: area.fillOpacity
+          }}
+        >
+          <Popup>
+            <h3>{area.name}</h3>
+            <p>{area.description}</p>
+          </Popup>
+        </Polygon>
+      ))}
     </MapContainer>
   );
 }
