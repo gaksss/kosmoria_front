@@ -49,9 +49,6 @@ function LocationFinder() {
   return null
 }
 
-
-
-
 export default function MyMap() {
   const [selected, setSelected] = useState<typeof locations[0] | null>(null)
 

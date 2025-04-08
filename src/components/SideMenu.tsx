@@ -18,8 +18,8 @@ const SideMenu = () => {
         
       </div>
       <ul className="flex flex-col gap-4 mt-4">
-        <li className="text-lg font-semibold">Home</li>
-        <li className="text-lg font-semibold">About</li>
+        <li className="text-lg font-semibold">Localisation</li>
+        <li className="text-lg font-semibold">A propos</li>
         <li className="text-lg font-semibold">Contact</li>
       </ul>
     </nav>

@@ -44,7 +44,7 @@ export const locations = [
     position: [558, 265],
     icon: "/icons/hobbit.png",
     description: "Région paisible et verdoyante habitée par les Hobbits.",
-    image: "/images/places/comte.jpg",
+    image: ["shire.webp", "cds.webp"],
     anecdotes: [
       "Les Hobbits mesurent en moyenne 1 mètre de haut.",
       "Frodon a quitté la Comté à l’âge de 50 ans.",
@@ -57,7 +57,7 @@ export const locations = [
     icon: "/icons/isengard.png",
     description:
       "Ancienne tour de Saroumane devenue lieu industriel pour ses armées.",
-    image: "/images/places/isengard.jpg",
+    image: ["isengardAfter.webp", "isengardTower.jpg"],
     anecdotes: [
       "Les Ents ont inondé Isengard pour le neutraliser.",
       "Saroumane a détruit la forêt autour d'Isengard pour alimenter ses forges.",
@@ -69,7 +69,7 @@ export const locations = [
     position: [291, 507],
     icon: "/icons/rohan.png",
     description: "Capitale du Rohan, connue pour son palais doré de Meduseld.",
-    image: "/images/places/edoras.jpg",
+    image: ["edoras.webp", "edorasMountain.jpg" ],
     anecdotes: [
       "Théoden, roi du Rohan, y a retrouvé sa volonté de se battre.",
       "Les Rohirrim sont de célèbres cavaliers.",
