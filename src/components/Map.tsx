@@ -14,8 +14,6 @@ import { CRS, LatLngBoundsLiteral, Icon } from "leaflet"
 import "leaflet/dist/leaflet.css"
 import { locations, polygonAreas } from "@/data/locations"
 
-
-
 const PlaceModal = dynamic(() => import("@/components/PlaceModal"), {
   ssr: false,
 })
@@ -49,6 +47,10 @@ function LocationFinder() {
   return null
 }
 
+function Localisation() {
+  return <div>Localisation Component</div>
+}
+
 export default function MyMap() {
   const [selected, setSelected] = useState<typeof locations[0] | null>(null)
 
@@ -63,11 +65,22 @@ export default function MyMap() {
         maxBounds={bounds}
         maxBoundsViscosity={1.0}
         className="h-full w-full"
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          height: "100%",
+          width: "100%",
+          zIndex: 1,
+        }}
       >
         <SetupBounds />
         <LocationFinder />
-
         <ImageOverlay url="/maps/mapome.png" bounds={bounds} />
+
+        <div className="absolute top-4 left-4 z-[1000]">
+          <Localisation />
+        </div>
 
         {locations.map((loc, i) => (
           <Marker

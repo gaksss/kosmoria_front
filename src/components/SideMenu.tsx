@@ -1,9 +1,10 @@
 import Image from "next/image";
 import React from "react";
+import Localisation from "./Localisation";
 
 const SideMenu = () => {
   return (
-    <nav className="fixed left-0 h-screen w-1/7 bg-background text-white flex flex-col items-start gap-4 p-4">
+    <nav className="fixed left-0 h-screen w-1/7 bg-background text-white flex flex-col items-start gap-4 p-4 z-50">
       <div className="flex items-center justify-center gap-2 w-full mt-10">
         <Image src="/img/logo.png" alt="logo" width={80} height={80} />
       </div>
@@ -15,12 +16,12 @@ const SideMenu = () => {
       </div>
       <div>
         <h2 className="text-2xl font-bold">Rechercher</h2>
-        
       </div>
       <ul className="flex flex-col gap-4 mt-4">
-        <li className="text-lg font-semibold">Localisation</li>
-        <li className="text-lg font-semibold">A propos</li>
-        <li className="text-lg font-semibold">Contact</li>
+        <li className="text-lg font-semibold">
+          <Localisation />
+        </li>
+        
       </ul>
     </nav>
   );

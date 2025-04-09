@@ -20,7 +20,7 @@ import {
 interface Place {
   name: string;
   description: string;
-  image: string[]; // Assurez-vous que c'est bien un tableau
+  image: string[]; 
   anecdotes: string[];
   race: string;
 }
