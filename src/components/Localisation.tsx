@@ -19,8 +19,8 @@ const Localisation = ({ onSelectLocation }: { onSelectLocation: (loc: typeof loc
             Localisations
           </NavigationMenuTrigger>
           <NavigationMenuContent className="z-50 absolute">
-            {locations.map((loc, i) => (
-              <NavigationMenuLink className="text-lg font-semibold" key={i}>
+            {locations.map((loc) => (
+              <NavigationMenuLink className="text-lg font-semibold" key={loc.name}>
                 <button
                   onClick={() => onSelectLocation(loc)}
                   className="hover:text-gray-300 w-full text-left"

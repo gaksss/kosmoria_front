@@ -1,6 +1,6 @@
-// components/PlaceModal.tsx
 "use client";
 
+import { type Place } from "@/types/Place";
 import {
   Dialog,
   DialogContent,
@@ -8,7 +8,6 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-
 import {
   Carousel,
   CarouselContent,
@@ -17,14 +16,6 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 
-interface Place {
-  name: string;
-  description: string;
-  image: string[]; 
-  anecdotes: string[];
-  race: string;
-}
-
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -32,6 +23,8 @@ interface Props {
 }
 
 export default function PlaceModal({ open, onOpenChange, place }: Props) {
+  const hasMultipleImages = place.image.length > 1;
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-xl p-6 z-[9999]">
@@ -43,18 +36,17 @@ export default function PlaceModal({ open, onOpenChange, place }: Props) {
         </DialogHeader>
         <Carousel opts={{ loop: true }}>
           <CarouselContent>
-            {Array.isArray(place.image) &&
-              place.image.map((img, index) => (
-                <CarouselItem key={index}>
-                  <img
-                    src={`/img/places/${place.race}/${img}`}
-                    alt={`${place.name} - Image ${index + 1}`}
-                    className="w-full h-64 object-cover rounded-lg my-4"
-                  />
-                </CarouselItem>
-              ))}
+            {place.image.map((img, index) => (
+              <CarouselItem key={`${place.name}-image-${index}`}>
+                <img
+                  src={`/img/places/${place.race}/${img}`}
+                  alt={`${place.name} - Image ${index + 1}`}
+                  className="w-full h-64 object-cover rounded-lg my-4"
+                />
+              </CarouselItem>
+            ))}
           </CarouselContent>
-          {place.image.length > 1 && (
+          {hasMultipleImages && (
             <>
               <CarouselPrevious />
               <CarouselNext />
@@ -62,8 +54,8 @@ export default function PlaceModal({ open, onOpenChange, place }: Props) {
           )}
         </Carousel>
         <ul className="list-disc ml-5 space-y-1 text-sm">
-          {place.anecdotes.map((anec, index) => (
-            <li key={index}>{anec}</li>
+          {place.anecdotes.map((anecdote, index) => (
+            <li key={`${place.name}-anecdote-${index}`}>{anecdote}</li>
           ))}
         </ul>
       </DialogContent>

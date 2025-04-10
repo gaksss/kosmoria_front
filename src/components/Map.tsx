@@ -19,12 +19,17 @@ const PlaceModal = dynamic(() => import("@/components/PlaceModal"), {
   ssr: false,
 });
 
-const imageWidth = 1024;
-const imageHeight = 768;
+const MAP_CONFIG = {
+  width: 1024,
+  height: 768,
+  minZoom: 1,
+  maxZoom: 5,
+  defaultZoom: 1,
+} as const;
 
 const bounds: LatLngBoundsLiteral = [
   [0, 0],
-  [imageHeight, imageWidth],
+  [MAP_CONFIG.height, MAP_CONFIG.width],
 ];
 
 function SetupBounds() {
@@ -44,26 +49,23 @@ function LocationFinder() {
   return null;
 }
 
-
-
-export default function MyMap({
-  selectedLocation,
-  onClearSelection,
-}: {
+type MapProps = {
   selectedLocation: typeof locations[0] | null;
   onClearSelection: () => void;
-}) {
+};
+
+export default function MyMap({ selectedLocation, onClearSelection }: MapProps) {
   const [selected, setSelected] = useState<typeof locations[0] | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [mapCenter, setMapCenter] = useState([imageHeight / 2, imageWidth / 2]); // Etat pour gérer le centrage
-  const [mapZoom, setMapZoom] = useState(1); // Etat pour gérer le zoom
+  const [mapCenter, setMapCenter] = useState<[number, number]>([MAP_CONFIG.height / 2, MAP_CONFIG.width / 2]);
+  const [mapZoom, setMapZoom] = useState<number>(MAP_CONFIG.defaultZoom); // Ajouter le type number pour mapZoom
 
   // Fonction pour gérer le clic sur un marqueur
   const handleMarkerClick = (loc: typeof locations[0]) => {
     setSelected(loc);
-    setIsModalOpen(true); // Ouvre la modale avec la nouvelle localisation
-    setMapCenter(loc.position); // Centre la carte sur la nouvelle localisation
-    setMapZoom(3); // Ajuste le zoom selon la localisation
+    setIsModalOpen(true);
+    setMapCenter(loc.position as [number, number]); 
+    setMapZoom(3);
   };
 
   const handleCloseModal = () => {
@@ -75,9 +77,9 @@ export default function MyMap({
   useEffect(() => {
     if (selectedLocation) {
       setSelected(selectedLocation);
-      setIsModalOpen(true); // Ouvre la modale automatiquement lorsqu'une localisation est sélectionnée
-      setMapCenter(selectedLocation.position); // Centre la carte sur la nouvelle localisation
-      setMapZoom(3); // Ajuste le zoom selon la localisation
+      setIsModalOpen(true);
+      setMapCenter(selectedLocation.position as [number, number]);
+      setMapZoom(3);
     }
   }, [selectedLocation]);
 
@@ -85,10 +87,10 @@ export default function MyMap({
     <>
       <MapContainer
         crs={CRS.Simple}
-        minZoom={1}
-        maxZoom={5}
-        zoom={mapZoom} // Utilise l'état contrôlé du zoom
-        center={mapCenter} // Utilise l'état contrôlé du centrage
+        minZoom={MAP_CONFIG.minZoom}
+        maxZoom={MAP_CONFIG.maxZoom}
+        zoom={mapZoom}
+        center={mapCenter as [number, number]}
         maxBounds={bounds}
         maxBoundsViscosity={1.0}
         className="h-full w-full"
@@ -107,9 +109,9 @@ export default function MyMap({
 
         <FlyToLocation selectedLocation={selectedLocation} />
 
-        {locations.map((loc, i) => (
+        {locations.map((loc) => (
           <Marker
-            key={i}
+            key={loc.name} // Utiliser une propriété unique comme clé
             position={loc.position}
             icon={
               new Icon({
@@ -120,7 +122,7 @@ export default function MyMap({
               })
             }
             eventHandlers={{
-              click: () => handleMarkerClick(loc), // Ouvre la modale ici
+              click: () => handleMarkerClick(loc),
             }}
           />
         ))}
@@ -145,10 +147,10 @@ export default function MyMap({
             if (!open) {
               handleCloseModal();
             }
-          }}
-          place={selected}
-        />
-      )}
+          }}  
+          place={selected}        
+        />                        
+      )}                           
     </>
   );
 }

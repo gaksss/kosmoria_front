@@ -1,5 +1,4 @@
 import Image from "next/image";
-import React from "react";
 import Localisation from "./Localisation";
 import { locations } from "@/data/locations";
 
