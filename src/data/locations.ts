@@ -1,5 +1,13 @@
 // src/data/locations.ts
-export const locations = [
+export const locations: {
+  name: string;
+  position: [number, number];
+  icon: string;
+  description: string;
+  image: string[];
+  anecdotes: string[];
+  race: string;
+}[] = [
   {
     name: "Mordor",
     position: [260, 770],
@@ -69,7 +77,7 @@ export const locations = [
     position: [291, 507],
     icon: "/icons/rohan.png",
     description: "Capitale du Rohan, connue pour son palais doré de Meduseld.",
-    image: ["edoras.webp", "edorasMountain.jpg" ],
+    image: ["edoras.webp", "edorasMountain.jpg"],
     anecdotes: [
       "Théoden, roi du Rohan, y a retrouvé sa volonté de se battre.",
       "Les Rohirrim sont de célèbres cavaliers.",

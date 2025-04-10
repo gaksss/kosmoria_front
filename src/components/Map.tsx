@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import dynamic from "next/dynamic"
+import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import {
   MapContainer,
   ImageOverlay,
@@ -9,59 +9,86 @@ import {
   useMap,
   Polygon,
   useMapEvents
-} from "react-leaflet"
-import { CRS, LatLngBoundsLiteral, Icon } from "leaflet"
-import "leaflet/dist/leaflet.css"
-import { locations, polygonAreas } from "@/data/locations"
+} from "react-leaflet";
+import { CRS, LatLngBoundsLiteral, Icon } from "leaflet";
+import "leaflet/dist/leaflet.css";
+import { locations, polygonAreas } from "@/data/locations";
+import FlyToLocation from "./FlyToLocation";
 
 const PlaceModal = dynamic(() => import("@/components/PlaceModal"), {
   ssr: false,
-})
+});
 
-// Dimensions de l'image de la map
-const imageWidth = 1024
-const imageHeight = 768
+const imageWidth = 1024;
+const imageHeight = 768;
 
-// Limites de la carte
 const bounds: LatLngBoundsLiteral = [
   [0, 0],
-  [imageHeight, imageWidth]
-]
+  [imageHeight, imageWidth],
+];
 
-// Centrage et limites
 function SetupBounds() {
-  const map = useMap()
-  map.setMaxBounds(bounds)
-  map.fitBounds(bounds)
-  return null
+  const map = useMap();
+  map.setMaxBounds(bounds);
+  map.fitBounds(bounds);
+  return null;
 }
 
-// Affiche les coordonnées au clic (debug)
 function LocationFinder() {
   useMapEvents({
     click: (e) => {
-      const { lat, lng } = e.latlng
-      console.log(`Coordonnées du clic : [${lat}, ${lng}]`)
+      const { lat, lng } = e.latlng;
+      console.log(`Coordonnées du clic : [${lat}, ${lng}]`);
+    },
+  });
+  return null;
+}
+
+
+
+export default function MyMap({
+  selectedLocation,
+  onClearSelection,
+}: {
+  selectedLocation: typeof locations[0] | null;
+  onClearSelection: () => void;
+}) {
+  const [selected, setSelected] = useState<typeof locations[0] | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [mapCenter, setMapCenter] = useState([imageHeight / 2, imageWidth / 2]); // Etat pour gérer le centrage
+  const [mapZoom, setMapZoom] = useState(1); // Etat pour gérer le zoom
+
+  // Fonction pour gérer le clic sur un marqueur
+  const handleMarkerClick = (loc: typeof locations[0]) => {
+    setSelected(loc);
+    setIsModalOpen(true); // Ouvre la modale avec la nouvelle localisation
+    setMapCenter(loc.position); // Centre la carte sur la nouvelle localisation
+    setMapZoom(3); // Ajuste le zoom selon la localisation
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    onClearSelection();
+    setSelected(null); // Optionnel : réinitialise la sélection
+  };
+
+  useEffect(() => {
+    if (selectedLocation) {
+      setSelected(selectedLocation);
+      setIsModalOpen(true); // Ouvre la modale automatiquement lorsqu'une localisation est sélectionnée
+      setMapCenter(selectedLocation.position); // Centre la carte sur la nouvelle localisation
+      setMapZoom(3); // Ajuste le zoom selon la localisation
     }
-  })
-  return null
-}
-
-function Localisation() {
-  return <div>Localisation Component</div>
-}
-
-export default function MyMap() {
-  const [selected, setSelected] = useState<typeof locations[0] | null>(null)
+  }, [selectedLocation]);
 
   return (
     <>
       <MapContainer
         crs={CRS.Simple}
         minZoom={1}
-        maxZoom={2}
-        zoom={1}
-        center={[imageHeight / 2, imageWidth / 2]}
+        maxZoom={5}
+        zoom={mapZoom} // Utilise l'état contrôlé du zoom
+        center={mapCenter} // Utilise l'état contrôlé du centrage
         maxBounds={bounds}
         maxBoundsViscosity={1.0}
         className="h-full w-full"
@@ -78,9 +105,7 @@ export default function MyMap() {
         <LocationFinder />
         <ImageOverlay url="/maps/mapome.png" bounds={bounds} />
 
-        <div className="absolute top-4 left-4 z-[1000]">
-          <Localisation />
-        </div>
+        <FlyToLocation selectedLocation={selectedLocation} />
 
         {locations.map((loc, i) => (
           <Marker
@@ -89,13 +114,13 @@ export default function MyMap() {
             icon={
               new Icon({
                 iconUrl: loc.icon,
-                iconSize: [30, 45], // à adapter
+                iconSize: [30, 45],
                 iconAnchor: [20, 40],
-                popupAnchor: [0, -40]
+                popupAnchor: [0, -40],
               })
             }
             eventHandlers={{
-              click: () => setSelected(loc)
+              click: () => handleMarkerClick(loc), // Ouvre la modale ici
             }}
           />
         ))}
@@ -107,19 +132,23 @@ export default function MyMap() {
             pathOptions={{
               color: area.color,
               fillColor: area.fillColor,
-              fillOpacity: area.fillOpacity
+              fillOpacity: area.fillOpacity,
             }}
           />
         ))}
       </MapContainer>
 
-      {selected && (
+      {isModalOpen && selected && (
         <PlaceModal
-          open={!!selected}
-          onOpenChange={(open) => !open && setSelected(null)}
+          open={isModalOpen}
+          onOpenChange={(open) => {
+            if (!open) {
+              handleCloseModal();
+            }
+          }}
           place={selected}
         />
       )}
     </>
-  )
+  );
 }
