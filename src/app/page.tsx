@@ -8,7 +8,6 @@ import { locations } from "@/data/locations";
 // Define types
 type Location = typeof locations[0];
 
-// Dynamically import Map component with loading state
 const DynamicMap = dynamic(() => import("@/components/Map"), {
   loading: () => <p>Votre map est en train de charger</p>,
   ssr: false,
@@ -16,21 +15,18 @@ const DynamicMap = dynamic(() => import("@/components/Map"), {
 
 export default function Home() {
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
-
-  // Memoize the map component to prevent unnecessary re-renders
   const MapComponent = useMemo(() => DynamicMap, []);
-
   const handleClearSelection = () => setSelectedLocation(null);
 
   return (
-    <main>
+    <div className="relative h-screen">
       <SideMenu onSelectLocation={setSelectedLocation} />
-      <div className="h-screen w-6/7 justify-self-end z-10">
+      <main className="absolute left-[14.2857%] right-0 h-full">
         <MapComponent 
           selectedLocation={selectedLocation} 
           onClearSelection={handleClearSelection} 
         />
-      </div>
-    </main>
+      </main>
+    </div>
   );
 }

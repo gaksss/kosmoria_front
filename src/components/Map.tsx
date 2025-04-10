@@ -8,12 +8,14 @@ import {
   Marker,
   useMap,
   Polygon,
-  useMapEvents
+  useMapEvents,
+  Polyline,
 } from "react-leaflet";
 import { CRS, LatLngBoundsLiteral, Icon } from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { locations, polygonAreas } from "@/data/locations";
+import { locations, paths, polygonAreas } from "@/data/locations";
 import FlyToLocation from "./FlyToLocation";
+import { area } from "framer-motion/client";
 
 const PlaceModal = dynamic(() => import("@/components/PlaceModal"), {
   ssr: false,
@@ -50,21 +52,27 @@ function LocationFinder() {
 }
 
 type MapProps = {
-  selectedLocation: typeof locations[0] | null;
+  selectedLocation: (typeof locations)[0] | null;
   onClearSelection: () => void;
 };
 
-export default function MyMap({ selectedLocation, onClearSelection }: MapProps) {
-  const [selected, setSelected] = useState<typeof locations[0] | null>(null);
+export default function MyMap({
+  selectedLocation,
+  onClearSelection,
+}: MapProps) {
+  const [selected, setSelected] = useState<(typeof locations)[0] | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [mapCenter, setMapCenter] = useState<[number, number]>([MAP_CONFIG.height / 2, MAP_CONFIG.width / 2]);
+  const [mapCenter, setMapCenter] = useState<[number, number]>([
+    MAP_CONFIG.height / 2,
+    MAP_CONFIG.width / 2,
+  ]);
   const [mapZoom, setMapZoom] = useState<number>(MAP_CONFIG.defaultZoom); // Ajouter le type number pour mapZoom
 
   // Fonction pour gérer le clic sur un marqueur
-  const handleMarkerClick = (loc: typeof locations[0]) => {
+  const handleMarkerClick = (loc: (typeof locations)[0]) => {
     setSelected(loc);
     setIsModalOpen(true);
-    setMapCenter(loc.position as [number, number]); 
+    setMapCenter(loc.position as [number, number]);
     setMapZoom(3);
   };
 
@@ -138,6 +146,16 @@ export default function MyMap({ selectedLocation, onClearSelection }: MapProps) 
             }}
           />
         ))}
+    {paths.map((path, index) => (
+        <Polyline
+          key={index}
+          positions={path.positions}
+          pathOptions={{
+            color: path.color,
+          
+          }}
+        />
+        ))}
       </MapContainer>
 
       {isModalOpen && selected && (
@@ -147,10 +165,10 @@ export default function MyMap({ selectedLocation, onClearSelection }: MapProps) 
             if (!open) {
               handleCloseModal();
             }
-          }}  
-          place={selected}        
-        />                        
-      )}                           
+          }}
+          place={selected}
+        />
+      )}
     </>
   );
 }

@@ -15,7 +15,7 @@ const Localisation = ({ onSelectLocation }: { onSelectLocation: (loc: typeof loc
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
-          <NavigationMenuTrigger className="text-lg font-semibold lg:pr-24">
+          <NavigationMenuTrigger className="text-lg font-semibold lg:pr-24 relative -left-4">
             Localisations
           </NavigationMenuTrigger>
           <NavigationMenuContent className="z-50 absolute">

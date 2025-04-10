@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Localisation from "./Localisation";
 import { locations } from "@/data/locations";
+import Parcours from "./Parcours";
 
 const SideMenu = ({ onSelectLocation }: { onSelectLocation: (location: typeof locations[0]) => void }) => {
   return (
@@ -17,6 +18,9 @@ const SideMenu = ({ onSelectLocation }: { onSelectLocation: (location: typeof lo
       <ul className="flex flex-col gap-4 mt-4">
         <li className="text-lg font-semibold">
           <Localisation onSelectLocation={onSelectLocation} />
+        </li>
+        <li className="text-lg font-semibold">
+          <Parcours />
         </li>
       </ul>
     </nav>
