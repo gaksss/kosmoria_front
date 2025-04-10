@@ -136,13 +136,15 @@ export interface Paths {
   name: string;
   description: string;
   color: string;
+  weight: number;
 }
 
-export const paths = [
+export const paths: Paths[] = [
   {
     name: "Chemin de l'anneau",
     description: "Le chemin qu'ont emprunté Frodon et Sam pour détruire l'anneau",
     color: "green",
+    weight: 4,
     positions: [
       [556.4375, 263.125],
       [543.5, 289.5],

@@ -152,7 +152,7 @@ export default function MyMap({
           positions={path.positions}
           pathOptions={{
             color: path.color,
-          
+            weight: path.weight,
           }}
         />
         ))}
