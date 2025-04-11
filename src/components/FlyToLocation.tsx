@@ -2,11 +2,13 @@
 
 import { useEffect } from "react";
 import { useMap } from "react-leaflet";
-import { locations } from "@/data/locations";
+import { locations, paths } from "@/data/locations";
 
 interface FlyToLocationProps {
   selectedLocation: typeof locations[0] | null;
 }
+
+
 
 export default function FlyToLocation({ selectedLocation }: FlyToLocationProps) {
   const map = useMap();
@@ -32,3 +34,6 @@ export default function FlyToLocation({ selectedLocation }: FlyToLocationProps) 
 
   return null;
 }
+
+
+

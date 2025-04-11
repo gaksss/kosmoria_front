@@ -10,7 +10,11 @@ import {
 
 import { locations } from "@/data/locations";
 
-const Localisation = ({ onSelectLocation }: { onSelectLocation: (loc: typeof locations[0]) => void }) => {
+const Localisation = ({
+  onSelectLocation,
+}: {
+  onSelectLocation: (loc: (typeof locations)[0]) => void;
+}) => {
   return (
     <NavigationMenu>
       <NavigationMenuList>
@@ -20,13 +24,17 @@ const Localisation = ({ onSelectLocation }: { onSelectLocation: (loc: typeof loc
           </NavigationMenuTrigger>
           <NavigationMenuContent className="z-50 absolute">
             {locations.map((loc) => (
-              <NavigationMenuLink className="text-lg font-semibold" key={loc.name}>
+              <NavigationMenuLink
+                className="text-lg font-semibold"
+                key={loc.name}
+              >
                 <button
                   onClick={() => onSelectLocation(loc)}
                   className="hover:text-gray-300 w-full text-left"
                 >
                   {loc.name}
                 </button>
+                <hr/>
               </NavigationMenuLink>
             ))}
           </NavigationMenuContent>

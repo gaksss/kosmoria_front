@@ -6,23 +6,22 @@ import {
   MapContainer,
   ImageOverlay,
   Marker,
-  useMap,
   Polygon,
-  useMapEvents,
   Polyline,
   Popup,
+  useMap,
+  useMapEvents,
 } from "react-leaflet";
 import { CRS, LatLngBoundsLiteral, Icon } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { locations, paths, polygonAreas } from "@/data/locations";
 import FlyToLocation from "./FlyToLocation";
-import { area, div } from "framer-motion/client";
-import { log } from "console";
 
 const PlaceModal = dynamic(() => import("@/components/PlaceModal"), {
   ssr: false,
 });
 
+// ====== CONFIGURATION ======
 const MAP_CONFIG = {
   width: 1024,
   height: 768,
@@ -31,11 +30,15 @@ const MAP_CONFIG = {
   defaultZoom: 1,
 } as const;
 
+
 const bounds: LatLngBoundsLiteral = [
   [0, 0],
   [MAP_CONFIG.height, MAP_CONFIG.width],
 ];
 
+// ====== HELPERS ======
+
+// Fonction pour définir les limites de la map
 function SetupBounds() {
   const map = useMap();
   map.setMaxBounds(bounds);
@@ -43,6 +46,8 @@ function SetupBounds() {
   return null;
 }
 
+
+// Fonction pour débugger afin d'avoir la position au click de la souris
 function LocationFinder() {
   useMapEvents({
     click: (e) => {
@@ -53,15 +58,61 @@ function LocationFinder() {
   return null;
 }
 
+// Fonction pour ouvrir une modale au click d'un marqueur
+function handleMarkerClick(
+  loc: typeof locations[0],
+  setSelected: React.Dispatch<React.SetStateAction<typeof locations[0] | null>>,
+  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
+  setMapCenter: React.Dispatch<React.SetStateAction<[number, number]>>,
+  setMapZoom: React.Dispatch<React.SetStateAction<number>>
+) {
+  setSelected(loc);
+  setIsModalOpen(true);
+  setMapCenter(loc.position as [number, number]);
+  setMapZoom(3);
+}
+
+// Fonction pour ouvrir la popup au survol du chemin
+function handleHoverPath(
+  path: typeof paths[0],
+  event: any,
+  setActivePopup: React.Dispatch<
+    React.SetStateAction<{
+      isOpen: boolean;
+      position: [number, number];
+      content: string;
+    }>
+  >
+) {
+  const { lat, lng } = event.latlng;
+  setActivePopup({
+    isOpen: true,
+    position: [lat, lng],
+    content: path.name,
+  });
+}
+
+// Fonction pour savoir quand la souris quitte le chemin
+function handleHoverExit(
+  setActivePopup: React.Dispatch<
+    React.SetStateAction<{
+      isOpen: boolean;
+      position: [number, number];
+      content: string;
+    }>
+  >
+) {
+  setActivePopup((prev) => ({ ...prev, isOpen: false }));
+}
+
+// ====== COMPOSANT PRINCIPAL ======
 type MapProps = {
   selectedLocation: (typeof locations)[0] | null;
+  selectedPath: (typeof paths)[0] | null;
   onClearSelection: () => void;
 };
 
-export default function MyMap({
-  selectedLocation,
-  onClearSelection,
-}: MapProps) {
+export default function MyMap({ selectedLocation, onClearSelection }: MapProps) {
   const [selected, setSelected] = useState<(typeof locations)[0] | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [mapCenter, setMapCenter] = useState<[number, number]>([
@@ -70,7 +121,6 @@ export default function MyMap({
   ]);
   const [mapZoom, setMapZoom] = useState<number>(MAP_CONFIG.defaultZoom);
 
-  // Ajout des états pour gérer la popup
   const [activePopup, setActivePopup] = useState<{
     isOpen: boolean;
     position: [number, number];
@@ -78,16 +128,8 @@ export default function MyMap({
   }>({
     isOpen: false,
     position: [0, 0],
-    content: ''
+    content: "",
   });
-
-  // Fonction pour gérer le clic sur un marqueur
-  const handleMarkerClick = (loc: (typeof locations)[0]) => {
-    setSelected(loc);
-    setIsModalOpen(true);
-    setMapCenter(loc.position as [number, number]);
-    setMapZoom(3);
-  };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -103,21 +145,6 @@ export default function MyMap({
       setMapZoom(3);
     }
   }, [selectedLocation]);
-
-  // Modification de la fonction handleHoverPath
-  const handleHoverPath = (path: typeof paths[0], event: any) => {
-    const { lat, lng } = event.latlng;
-    setActivePopup({
-      isOpen: true,
-      position: [lat, lng],
-      content: path.name
-    });
-  };
-
-  // Ajout de la fonction pour gérer la sortie du hover
-  const handleHoverExit = () => {
-    setActivePopup(prev => ({ ...prev, isOpen: false }));
-  };
 
   return (
     <>
@@ -142,7 +169,6 @@ export default function MyMap({
         <SetupBounds />
         <LocationFinder />
         <ImageOverlay url="/maps/mapome.png" bounds={bounds} />
-
         <FlyToLocation selectedLocation={selectedLocation} />
 
         {locations.map((loc) => (
@@ -158,7 +184,8 @@ export default function MyMap({
               })
             }
             eventHandlers={{
-              click: () => handleMarkerClick(loc),
+              click: () =>
+                handleMarkerClick(loc, setSelected, setIsModalOpen, setMapCenter, setMapZoom),
             }}
           />
         ))}
@@ -184,18 +211,13 @@ export default function MyMap({
                 weight: path.weight,
               }}
               eventHandlers={{
-                mouseover: (e) => handleHoverPath(path, e),
-                mouseout: handleHoverExit
+                mouseover: (e) => handleHoverPath(path, e, setActivePopup),
+                mouseout: () => handleHoverExit(setActivePopup),
               }}
             />
             {activePopup.isOpen && (
-              <Popup
-                position={activePopup.position}
-                className="custom-popup"
-              >
-                <div className="text-sm font-semibold">
-                  {activePopup.content}
-                </div>
+              <Popup position={activePopup.position} className="custom-popup">
+                <div className="text-sm font-semibold">{activePopup.content}</div>
               </Popup>
             )}
           </React.Fragment>
@@ -206,9 +228,7 @@ export default function MyMap({
         <PlaceModal
           open={isModalOpen}
           onOpenChange={(open) => {
-            if (!open) {
-              handleCloseModal();
-            }
+            if (!open) handleCloseModal();
           }}
           place={selected}
         />

@@ -1,9 +1,11 @@
 import Image from "next/image";
 import Localisation from "./Localisation";
-import { locations } from "@/data/locations";
+import { locations, paths } from "@/data/locations";
 import Parcours from "./Parcours";
 
-const SideMenu = ({ onSelectLocation }: { onSelectLocation: (location: typeof locations[0]) => void }) => {
+const SideMenu = ({ onSelectLocation, onSelectPath }: { onSelectLocation: (location: typeof locations[0]) => void,
+  onSelectPath: (path: typeof paths[0]) => void
+ }) => {
   return (
     <nav className="fixed left-0 h-screen w-1/7 bg-background text-white flex flex-col items-start gap-4 p-4 z-50">
       <div className="flex items-center justify-center gap-2 w-full mt-10">
@@ -20,7 +22,7 @@ const SideMenu = ({ onSelectLocation }: { onSelectLocation: (location: typeof lo
           <Localisation onSelectLocation={onSelectLocation} />
         </li>
         <li className="text-lg font-semibold">
-          <Parcours />
+          <Parcours onSelectPath={onSelectPath} />
         </li>
       </ul>
     </nav>

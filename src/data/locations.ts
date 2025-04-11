@@ -141,7 +141,7 @@ export interface Paths {
 
 export const paths: Paths[] = [
   {
-    name: "Chemin de l'anneau",
+    name: "Chemin de Frodon et Sam",
     description: "Le chemin qu'ont emprunté Frodon et Sam pour détruire l'anneau",
     color: "green",
     weight: 4,
