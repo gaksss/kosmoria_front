@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { Providers } from "./providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,7 +17,7 @@ export const metadata: Metadata = {
   title: "Kosmoria",
   description: "La map de la terre du milieu dans le creux de votre main",
   // Ajout des métadonnées pour le SEO
-  keywords: "Kosmoria, map, terre du milieu, fantasy",
+  keywords: "Kosmoria, map, terre du milieu, fantasy, seigneur des anneaux",
   authors: [{ name: "Clément" }],
   viewport: "width=device-width, initial-scale=1",
 };
@@ -31,7 +32,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen`}
       >
+        <Providers>
         {children}
+        </Providers>
       </body>
     </html>
   );
