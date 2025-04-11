@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import {
   MapContainer,
@@ -10,12 +10,14 @@ import {
   Polygon,
   useMapEvents,
   Polyline,
+  Popup,
 } from "react-leaflet";
 import { CRS, LatLngBoundsLiteral, Icon } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { locations, paths, polygonAreas } from "@/data/locations";
 import FlyToLocation from "./FlyToLocation";
-import { area } from "framer-motion/client";
+import { area, div } from "framer-motion/client";
+import { log } from "console";
 
 const PlaceModal = dynamic(() => import("@/components/PlaceModal"), {
   ssr: false,
@@ -66,7 +68,18 @@ export default function MyMap({
     MAP_CONFIG.height / 2,
     MAP_CONFIG.width / 2,
   ]);
-  const [mapZoom, setMapZoom] = useState<number>(MAP_CONFIG.defaultZoom); // Ajouter le type number pour mapZoom
+  const [mapZoom, setMapZoom] = useState<number>(MAP_CONFIG.defaultZoom);
+
+  // Ajout des états pour gérer la popup
+  const [activePopup, setActivePopup] = useState<{
+    isOpen: boolean;
+    position: [number, number];
+    content: string;
+  }>({
+    isOpen: false,
+    position: [0, 0],
+    content: ''
+  });
 
   // Fonction pour gérer le clic sur un marqueur
   const handleMarkerClick = (loc: (typeof locations)[0]) => {
@@ -79,7 +92,7 @@ export default function MyMap({
   const handleCloseModal = () => {
     setIsModalOpen(false);
     onClearSelection();
-    setSelected(null); // Optionnel : réinitialise la sélection
+    setSelected(null);
   };
 
   useEffect(() => {
@@ -90,6 +103,21 @@ export default function MyMap({
       setMapZoom(3);
     }
   }, [selectedLocation]);
+
+  // Modification de la fonction handleHoverPath
+  const handleHoverPath = (path: typeof paths[0], event: any) => {
+    const { lat, lng } = event.latlng;
+    setActivePopup({
+      isOpen: true,
+      position: [lat, lng],
+      content: path.name
+    });
+  };
+
+  // Ajout de la fonction pour gérer la sortie du hover
+  const handleHoverExit = () => {
+    setActivePopup(prev => ({ ...prev, isOpen: false }));
+  };
 
   return (
     <>
@@ -119,7 +147,7 @@ export default function MyMap({
 
         {locations.map((loc) => (
           <Marker
-            key={loc.name} // Utiliser une propriété unique comme clé
+            key={loc.name}
             position={loc.position}
             icon={
               new Icon({
@@ -146,15 +174,31 @@ export default function MyMap({
             }}
           />
         ))}
-    {paths.map((path, index) => (
-        <Polyline
-          key={index}
-          positions={path.positions}
-          pathOptions={{
-            color: path.color,
-            weight: path.weight,
-          }}
-        />
+
+        {paths.map((path, index) => (
+          <React.Fragment key={index}>
+            <Polyline
+              positions={path.positions}
+              pathOptions={{
+                color: path.color,
+                weight: path.weight,
+              }}
+              eventHandlers={{
+                mouseover: (e) => handleHoverPath(path, e),
+                mouseout: handleHoverExit
+              }}
+            />
+            {activePopup.isOpen && (
+              <Popup
+                position={activePopup.position}
+                className="custom-popup"
+              >
+                <div className="text-sm font-semibold">
+                  {activePopup.content}
+                </div>
+              </Popup>
+            )}
+          </React.Fragment>
         ))}
       </MapContainer>
 
