@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Il est préférable de ne pas hardcoder l'URL de l'API ici. Utilisez une variable d'environnement ou un fichier de configuration.
-const API_URL = "https://localhost:8000/api";
+const API_URL = "http://127.0.0.1:8000/api";
 
 // Configuration Axios
 const api = axios.create({
@@ -85,7 +85,7 @@ export const AuthService = {
    */
   getCurrentUser: async () => {
     try {
-      const response = await api.get("/user/me");
+      const response = await api.get("/me");
       return response.data;
     } catch (error) {
       throw (

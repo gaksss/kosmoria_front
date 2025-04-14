@@ -1,5 +1,4 @@
-"use client"
-
+"use client";
 
 import Image from "next/image";
 import Localisation from "./Localisation";
@@ -42,12 +41,32 @@ const SideMenu = ({
         <li className="text-lg font-semibold">
           <Parcours onSelectPath={onSelectPath} />
         </li>
-        <li>
-          <Link href="/login" className="text-lg font-semibold">
-            Connexion
-          </Link>
-        </li>
-       
+        {isAuthenticated ? (
+          <>
+            <li className="text-lg font-semibold">
+              <Link href="/profile">Profil</Link>
+            </li>
+            <li
+              onClick={logout}
+              className="text-lg font-semibold cursor-pointer"
+            >
+              Se déconnecter
+            </li>
+          </>
+        ) : (
+          <>
+            <li>
+              <Link href="/login" className="text-lg font-semibold">
+                Connexion
+              </Link>
+            </li>
+            <li>
+              <Link href="/register" className="text-lg font-semibold">
+                Inscription
+              </Link>
+            </li>
+          </>
+        )}
       </ul>
     </nav>
   );
