@@ -8,6 +8,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { useAuth } from "@/context/auth-context";
+import { SearchInput } from "./SearchInput";
 
 const SideMenu = ({
   onSelectLocation,
@@ -32,7 +33,14 @@ const SideMenu = ({
         <h1 className="text-3xl font-bold">Kosmoria</h1>
       </div>
       <div>
-        <h2 className="text-2xl font-bold">Rechercher</h2>
+        <SearchInput
+          onLocationSelect={(location) => {
+            onSelectLocation(location);
+          }}
+          onPathSelect={(path) => {
+            onSelectPath(path);
+          }}
+        />
       </div>
       <ul className="flex flex-col gap-4 mt-4">
         <li className="text-lg font-semibold">
