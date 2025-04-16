@@ -78,7 +78,7 @@ export default function RegisterPage() {
         <div className="space-y-2 text-center">
           <h1 className="text-3xl font-bold">Créer un compte</h1>
           <p className="text-muted-foreground">
-            Rejoignez BookMarket et commencez à explorer notre bibliothèque
+            Rejoignez Kosmoria
           </p>
         </div>
 

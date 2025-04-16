@@ -1,8 +1,8 @@
 import { ReactNode } from "react";
 
 export const metadata = {
-  title: "Connexion | Kosmoria",
-  description: "Connectez-vous à votre compte Kosmoria",
+  title: "Profile | Kosmoria",
+  description: "Regardez votre profil Kosmoria",
 };
 
 interface LoginLayoutProps {

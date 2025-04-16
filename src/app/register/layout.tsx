@@ -1,6 +1,6 @@
 export const metadata = {
-    title: "Inscription | BookMarket",
-    description: "Créez un nouveau compte BookMarket",
+    title: "Inscription | Kosmoria",
+    description: "Créez un nouveau compte Kosmoria",
   };
   
   type RegisterLayoutProps = {
