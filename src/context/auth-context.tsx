@@ -14,6 +14,9 @@ import { toast } from "sonner";
 // Types des données utilisateur
 interface User {
   email: string;
+  pseudo: string;
+  avatar?: string;
+  race: string;
   // Ajoute d'autres champs ici si nécessaires (ex : id, nom, etc.)
 }
 

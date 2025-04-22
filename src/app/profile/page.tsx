@@ -16,6 +16,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { useAuth } from "@/context/auth-context";
 import { AvatarDialog } from "@/components/AvatarDialog";
+import { useUser } from "@/lib/hooks/useUser";
 
 interface Race {
   hobbit: string;
@@ -50,7 +51,13 @@ const raceGradients: RaceGradients = {
 };
 
 const avatarByRace: AvatarByRace = {
-  hobbit: ["/avatars/hobbit/frodo.webp", "/avatars/hobbit/bilbo.webp", "/avatars/hobbit/merry.webp", "/avatars/hobbit/pipin.webp", "/avatars/hobbit/sam.webp"],
+  hobbit: [
+    "/avatars/hobbit/frodo.webp",
+    "/avatars/hobbit/bilbo.webp",
+    "/avatars/hobbit/merry.webp",
+    "/avatars/hobbit/pipin.webp",
+    "/avatars/hobbit/sam.webp",
+  ],
   elves: "/img/legolas.jpg",
   gondor: "/img/aragon.jpg",
   rohan: "/img/eomer.jpg",
@@ -61,10 +68,18 @@ const avatarByRace: AvatarByRace = {
 
 export default function ProfilePage() {
   const [race, setRace] = useState<keyof Race>("hobbit");
-  const [avatar, setAvatar] = useState<string | string[]>(avatarByRace["hobbit"]);
+  const [avatar, setAvatar] = useState<string | string[]>(
+    avatarByRace["hobbit"]
+  );
   const [avatarKey, setAvatarKey] = useState<number>(0);
-  const { user, isAuthenticated, logout } = useAuth();
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+
+  const { user, loading, error } = useUser();
+
+  // Affiche un loading ou un fallback
+  if (loading) return <p>Chargement...</p>;
+  if (error) return <p className="text-red-500">Erreur : {error}</p>;
+  if (!user) return <p>Utilisateur non trouvé</p>;
 
   console.log(user);
 
@@ -92,7 +107,7 @@ export default function ProfilePage() {
     >
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl md:text-5xl font-bold text-yellow-200 drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
+          <h1 className="text-3xl md:text-5xl font-bold text-yellow-200">
             Profil du Voyageur
           </h1>
           <Link href="/">
@@ -104,9 +119,7 @@ export default function ProfilePage() {
       before:transition-transform before:duration-500 hover:before:translate-x-[100%]
       hover:bg-white/10 hover:text-yellow-100 cursor-pointer"
             >
-              <span className="relative z-10">
-                Retour à la carte
-              </span>
+              <span className="relative z-10">Retour à la carte</span>
             </Button>
           </Link>
         </div>
@@ -159,7 +172,10 @@ export default function ProfilePage() {
                       >
                         Isengard
                       </SelectItem>
-                      <SelectItem value="dwarf" className="hover:bg-red-800/30 cursor-pointer">
+                      <SelectItem
+                        value="dwarf"
+                        className="hover:bg-red-800/30 cursor-pointer"
+                      >
                         Nain
                       </SelectItem>
                       <SelectItem
@@ -193,16 +209,16 @@ export default function ProfilePage() {
                 <div className="space-y-2">
                   <label className="text-sm font-semibold">Pseudo</label>
                   <Input
-                    defaultValue="Test"
-                    className="hover:ring-2 hover:ring-white/30 transition-all duration-300 cursor-pointer"
+                    defaultValue={user?.pseudo || "Nom d'utilisateur"}
+                    className="hover:ring-2 hover:ring-white/30 transition-all duration-300 "
                   />
                 </div>
 
                 <div className="space-y-2">
                   <label className="text-sm font-semibold">Email</label>
                   <Input
-                    defaultValue="test@test.com"
-                    className="hover:ring-2 hover:ring-white/30 transition-all duration-300 cursor-pointer"
+                    defaultValue={user?.email || "Email"}
+                    className="hover:ring-2 hover:ring-white/30 transition-all duration-300"
                   />
                 </div>
 
@@ -211,7 +227,7 @@ export default function ProfilePage() {
                   <Input
                     type="password"
                     defaultValue="123456789"
-                    className="hover:ring-2 hover:ring-white/30 transition-all duration-300 cursor-pointer"
+                    className="hover:ring-2 hover:ring-white/30 transition-all duration-300"
                   />
                 </div>
 
@@ -222,7 +238,7 @@ export default function ProfilePage() {
                   <Input
                     type="password"
                     defaultValue="123456789"
-                    className="hover:ring-2 hover:ring-white/30 transition-all duration-300 cursor-pointer"
+                    className="hover:ring-2 hover:ring-white/30 transition-all duration-300"
                   />
                 </div>
 
