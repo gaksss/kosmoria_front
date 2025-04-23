@@ -48,7 +48,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       try {
         if (AuthService.isAuthenticated()) {
           const userData = await AuthService.getCurrentUser();
-          setUser(userData);
+          setUser(userData); // Assure-toi que userData contient toutes les informations nécessaires
         }
       } catch (error) {
         console.error("Erreur lors de l'initialisation de l'authentification", error);
@@ -68,7 +68,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     try {
       setLoading(true);
       const response = await AuthService.login(email, password);
-      setUser(response.user || { email });
+      const userData = await AuthService.getCurrentUser(); // On récupère toutes les données utilisateur après la connexion
+      setUser(userData); // Met à jour l'état avec toutes les données utilisateur
       toast.success("Connexion réussie", {
         description: "Vous êtes maintenant connecté.",
       });
@@ -109,11 +110,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const logout = () => {
     AuthService.logout();
-    setUser(null);
+    setUser(null); // Réinitialise l'état utilisateur lors de la déconnexion
     toast.info("Déconnexion", {
       description: "Vous avez été déconnecté avec succès.",
     });
-    router.push("/");
+    router.push("/"); // Redirige vers la page d'accueil
   };
 
   return (
@@ -124,7 +125,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         login,
         register,
         logout,
-        isAuthenticated: !!user,
+        isAuthenticated: !!user, // Vérifie si l'utilisateur est connecté
       }}
     >
       {children}
