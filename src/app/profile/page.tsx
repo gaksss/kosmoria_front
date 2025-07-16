@@ -380,28 +380,39 @@ export default function ProfilePage() {
                             </DialogTitle>
                           </DialogHeader>
                           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-4">
-                            {selectedRace && 
-                              (Array.isArray(avatarsByRace[selectedRace.name.toLowerCase()]) 
-                                ? (avatarsByRace[selectedRace.name.toLowerCase()] as string[]).map((avatarPath: string, index: number) => (
-                                  <div
-                                    key={index}
-                                    className={`relative aspect-square rounded-lg overflow-hidden cursor-pointer transition-all duration-300 
-                                    ${avatar === avatarPath ? "ring-2 ring-white scale-95" : "hover:scale-95"}`}
-                                    onClick={() => {
-                                      setAvatar(avatarPath);
-                                      setAvatarKey((prev) => prev + 1);
-                                    }}
-                                  >
-                                    <Image
-                                      src={avatarPath}
-                                      alt={`Avatar ${index + 1} de ${selectedRace.name}`}
-                                      fill
-                                      className="object-cover"
-                                    />
-                                  </div>
-                                ))
-                                : null
-                              )}
+                            {selectedRace &&
+                              (Array.isArray(
+                                avatarsByRace[selectedRace.name.toLowerCase()]
+                              )
+                                ? (
+                                    avatarsByRace[
+                                      selectedRace.name.toLowerCase()
+                                    ] as string[]
+                                  ).map((avatarPath: string, index: number) => (
+                                    <div
+                                      key={index}
+                                      className={`relative aspect-square rounded-lg overflow-hidden cursor-pointer transition-all duration-300 
+                                    ${
+                                      avatar === avatarPath
+                                        ? "ring-2 ring-white scale-95"
+                                        : "hover:scale-95"
+                                    }`}
+                                      onClick={() => {
+                                        setAvatar(avatarPath);
+                                        setAvatarKey((prev) => prev + 1);
+                                      }}
+                                    >
+                                      <Image
+                                        src={avatarPath}
+                                        alt={`Avatar ${index + 1} de ${
+                                          selectedRace.name
+                                        }`}
+                                        fill
+                                        className="object-cover"
+                                      />
+                                    </div>
+                                  ))
+                                : null)}
                           </div>
                           <div className="flex justify-end mt-4 gap-2">
                             <Button

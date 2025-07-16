@@ -24,7 +24,9 @@ const registerSchema = z
   .object({
     pseudo: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
     email: z.string().email("Adresse email invalide"),
-    password: z.string().min(6, "Le mot de passe doit contenir au moins 6 caractères"),
+    password: z
+      .string()
+      .min(6, "Le mot de passe doit contenir au moins 6 caractères"),
     confirmPassword: z.string(),
     acceptTerms: z.boolean().refine((val) => val === true, {
       message: "Vous devez accepter les conditions d'utilisation",
@@ -73,30 +75,40 @@ export default function RegisterPage() {
   };
 
   return (
-    <main className="flex flex-col items-center justify-between p-6 md:p-24">
-      <div className="space-y-6">
-        <div className="space-y-2 text-center">
-          <h1 className="text-3xl font-bold">Créer un compte</h1>
-          <p className="text-muted-foreground">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 dark:from-emerald-950 dark:via-green-950 dark:to-teal-950 flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        {/* Header avec logo/titre */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-emerald-100 dark:bg-emerald-900/50 rounded-full mb-4 shadow-lg">
+            <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-green-600 rounded-lg shadow-sm"></div>
+          </div>
+          <h1 className="text-2xl font-bold text-foreground mb-2">
             Rejoignez Kosmoria
+          </h1>
+          <p className="text-muted-foreground text-sm">
+            Créez votre compte en quelques minutes
           </p>
         </div>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-
+        {/* Carte principale */}
+        <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border border-emerald-200/50 dark:border-emerald-800/50 rounded-xl p-6 shadow-xl shadow-emerald-500/10">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+              {/* Pseudo */}
               <FormField
                 control={form.control}
                 name="pseudo"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Pseudo</FormLabel>
+                    <FormLabel className="text-sm font-medium text-foreground">
+                      Pseudo
+                    </FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="XxDarkSasukexX"
-                        autoComplete="pseudo"
+                        placeholder="Votre pseudo"
+                        autoComplete="username"
                         disabled={isLoading}
+                        className="h-11 bg-white/70 dark:bg-gray-800/70 border-emerald-200 dark:border-emerald-700 focus:border-emerald-400 dark:focus:border-emerald-500 focus:ring-emerald-200 dark:focus:ring-emerald-800 transition-all"
                         {...field}
                       />
                     </FormControl>
@@ -104,125 +116,173 @@ export default function RegisterPage() {
                   </FormItem>
                 )}
               />
-            </div>
 
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Adresse email</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="exemple@email.com"
-                      type="email"
-                      autoComplete="email"
-                      disabled={isLoading}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              {/* Email */}
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-medium text-foreground">
+                      Adresse email
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="exemple@email.com"
+                        type="email"
+                        autoComplete="email"
+                        disabled={isLoading}
+                        className="h-11 bg-white/70 dark:bg-gray-800/70 border-emerald-200 dark:border-emerald-700 focus:border-emerald-400 dark:focus:border-emerald-500 focus:ring-emerald-200 dark:focus:ring-emerald-800 transition-all"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Mot de passe</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="••••••••"
-                      type="password"
-                      autoComplete="new-password"
-                      disabled={isLoading}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              {/* Mot de passe */}
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-medium text-foreground">
+                      Mot de passe
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="••••••••"
+                        type="password"
+                        autoComplete="new-password"
+                        disabled={isLoading}
+                        className="h-11 bg-white/70 dark:bg-gray-800/70 border-emerald-200 dark:border-emerald-700 focus:border-emerald-400 dark:focus:border-emerald-500 focus:ring-emerald-200 dark:focus:ring-emerald-800 transition-all"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Confirmer le mot de passe</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="••••••••"
-                      type="password"
-                      autoComplete="new-password"
-                      disabled={isLoading}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              {/* Confirmation mot de passe */}
+              <FormField
+                control={form.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-medium text-foreground">
+                      Confirmer le mot de passe
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="••••••••"
+                        type="password"
+                        autoComplete="new-password"
+                        disabled={isLoading}
+                        className="h-11 bg-white/70 dark:bg-gray-800/70 border-emerald-200 dark:border-emerald-700 focus:border-emerald-400 dark:focus:border-emerald-500 focus:ring-emerald-200 dark:focus:ring-emerald-800 transition-all"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="acceptTerms"
-              render={({ field }) => (
-                <div className="flex items-start space-x-2 mt-4">
-                  <Checkbox
-                    id="acceptTerms"
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                    disabled={isLoading}
-                  />
-                  <div className="grid gap-1.5 leading-none">
-                    <label
-                      htmlFor="acceptTerms"
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      J&apos;accepte les{" "}
-                      <Link
-                        href="/terms"
-                        className="text-primary hover:underline"
-                      >
-                        conditions d&apos;utilisation
-                      </Link>{" "}
-                      et la{" "}
-                      <Link
-                        href="/privacy"
-                        className="text-primary hover:underline"
-                      >
-                        politique de confidentialité
-                      </Link>
-                    </label>
+              {/* Checkbox conditions */}
+              <FormField
+                control={form.control}
+                name="acceptTerms"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-start space-x-3 p-4 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg border border-emerald-200/50 dark:border-emerald-800/50">
+                      <Checkbox
+                        id="acceptTerms"
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        disabled={isLoading}
+                        className="mt-0.5"
+                      />
+                      <div className="space-y-1 leading-none">
+                        <label
+                          htmlFor="acceptTerms"
+                          className="text-sm text-foreground cursor-pointer"
+                        >
+                          J&apos;accepte les{" "}
+                          <Link
+                            href="/terms"
+                            className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 underline underline-offset-2 transition-colors font-medium"
+                          >
+                            conditions d&apos;utilisation
+                          </Link>{" "}
+                          et la{" "}
+                          <Link
+                            href="/privacy"
+                            className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 underline underline-offset-2 transition-colors font-medium"
+                          >
+                            politique de confidentialité
+                          </Link>
+                        </label>
+                        <FormMessage />
+                      </div>
+                    </div>
+                  </FormItem>
+                )}
+              />
+
+              {/* Bouton submit */}
+              <Button
+                type="submit"
+                className="w-full h-12 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-semibold shadow-lg hover:shadow-xl shadow-emerald-500/30 hover:shadow-emerald-500/40 transition-all duration-200 transform hover:scale-[1.02] border-0 focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    <span>Inscription en cours...</span>
                   </div>
-                </div>
-              )}
-            />
-            <FormMessage>
-              {form.formState.errors.acceptTerms?.message}
-            </FormMessage>
+                ) : (
+                  <span className="flex items-center space-x-2">
+                    <span>Créer mon compte</span>
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 7l5 5m0 0l-5 5m5-5H6"
+                      />
+                    </svg>
+                  </span>
+                )}
+              </Button>
+            </form>
+          </Form>
+        </div>
 
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Inscription en cours..." : "S'inscrire"}
-            </Button>
-          </form>
-        </Form>
-
-        <div className="text-center">
+        {/* Lien vers connexion */}
+        <div className="text-center mt-6">
           <p className="text-sm text-muted-foreground">
             Déjà un compte ?{" "}
             <Link
               href="/login"
-              className="font-medium text-primary hover:underline"
+              className="font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 underline underline-offset-2 transition-colors"
             >
               Se connecter
             </Link>
           </p>
         </div>
+
+        {/* Décoration subtile */}
+        <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-emerald-400/10 rounded-full blur-3xl"></div>
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-green-400/10 rounded-full blur-3xl"></div>
+        </div>
       </div>
-    </main>
+    </div>
   );
 }
