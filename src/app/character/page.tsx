@@ -4,14 +4,18 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 
 import { SearchInput } from "@/components/CharacterSearchBar";
+import ProfileCard from "@/components/CharacterCard";
+import CharacterModal from "@/components/CharacterModal";
+
 import { characters, LotrCharacter } from "@/data/character";
-import { ProfileCard } from "@/components/CharacterCard";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 
 const CharacterPage = () => {
   const [profileData, setProfileData] = useState<LotrCharacter[]>([]);
+  const [selectedCharacter, setSelectedCharacter] = useState<LotrCharacter | null>(null);
+
   const searchParams = useSearchParams();
   const rawQuery = searchParams?.get("q") ?? "";
 
@@ -30,9 +34,16 @@ const CharacterPage = () => {
 
   const total = profileData.length;
 
+  const handleCardClick = (character: LotrCharacter) => {
+    setSelectedCharacter(character);
+  };
+
+  const handleModalClose = () => {
+    setSelectedCharacter(null);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 dark:from-emerald-950 dark:via-green-950 dark:to-teal-950 relative overflow-hidden">
-      {/* Decorative background elements */}
       <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-emerald-400/10 rounded-full blur-3xl"></div>
         <div className="absolute top-1/3 -left-40 w-96 h-96 bg-green-400/10 rounded-full blur-3xl"></div>
@@ -40,7 +51,6 @@ const CharacterPage = () => {
       </div>
 
       <section className="relative w-full px-6 md:px-20 py-10">
-        {/* Nav retour home */}
         <div className="justify-start items-start flex">
           <Link href="/" aria-label="Retour à la carte">
             <Button
@@ -52,7 +62,7 @@ const CharacterPage = () => {
             </Button>
           </Link>
         </div>
-        {/* Header Section */}
+
         <div className="mb-8">
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-emerald-100 dark:bg-emerald-900/50 rounded-full mb-4 shadow-lg">
@@ -67,7 +77,6 @@ const CharacterPage = () => {
             </p>
           </div>
 
-          {/* Search Section */}
           <div className="max-w-md mx-auto mb-6">
             <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border border-emerald-200/50 dark:border-emerald-800/50 rounded-xl p-4 shadow-lg shadow-emerald-500/10">
               <SearchInput defaultValue={rawQuery} />
@@ -75,35 +84,28 @@ const CharacterPage = () => {
           </div>
         </div>
 
-        {/* Results Counter */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center space-x-2 bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm border border-emerald-200/30 dark:border-emerald-800/30 rounded-full px-4 py-2 shadow-md">
             <div className="flex-shrink-0 w-2 h-2 bg-gradient-to-br from-emerald-500 to-green-600 rounded-full shadow-sm"></div>
             <p className="text-sm font-medium text-muted-foreground">
               {total === 0
                 ? "Aucun personnage trouvé"
-                : `${total} personnage${total > 1 ? "s" : ""} trouvé${
-                    total > 1 ? "s" : ""
-                  }`}
+                : `${total} personnage${total > 1 ? "s" : ""} trouvé${total > 1 ? "s" : ""}`}
             </p>
           </div>
         </div>
 
-        {/* Characters Grid */}
         {total > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {profileData.map((character) => (
               <ProfileCard
-                id={character.id}
-                key={character.name}
-                name={character.name}
-                race={character.race}
-                photo={character.photo}
+                key={character.id}
+                {...character}
+                onClick={handleCardClick}
               />
             ))}
           </div>
         ) : (
-          /* Empty State */
           <div className="text-center py-16">
             <div className="bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm border border-emerald-200/30 dark:border-emerald-800/30 rounded-2xl p-8 max-w-md mx-auto shadow-lg">
               <div className="w-16 h-16 bg-gradient-to-br from-emerald-100 to-green-100 dark:from-emerald-900/50 dark:to-green-900/50 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -121,16 +123,14 @@ const CharacterPage = () => {
                   />
                 </svg>
               </div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">
-                Aucun personnage trouvé
-              </h3>
-              <p className="text-muted-foreground text-sm">
-                Essayez de modifier votre recherche ou parcourez tous les
-                personnages
+              <p className="text-lg font-semibold text-muted-foreground">
+                Aucun personnage ne correspond à votre recherche.
               </p>
             </div>
           </div>
         )}
+
+        <CharacterModal character={selectedCharacter} onClose={handleModalClose} />
       </section>
     </div>
   );
