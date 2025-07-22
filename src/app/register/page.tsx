@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import { ArrowLeft } from "lucide-react";
 
 // ✅ Schéma de validation avec zod
 const registerSchema = z
@@ -77,6 +78,18 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 dark:from-emerald-950 dark:via-green-950 dark:to-teal-950 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
+        {/* Nav retour home */}
+        <div className="justify-start items-start flex">
+          <Link href="/" aria-label="Retour à la carte">
+            <Button
+              variant="outline"
+              className="text-white border border-white/20 hover:bg-white/10 transition-all duration-300 cursor-pointer rounded-full px-6 flex items-center gap-2"
+            >
+              <ArrowLeft size={18} />
+              <span>Carte</span>
+            </Button>
+          </Link>
+        </div>
         {/* Header avec logo/titre */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-emerald-100 dark:bg-emerald-900/50 rounded-full mb-4 shadow-lg">
