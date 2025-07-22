@@ -542,7 +542,7 @@ export default function ProfilePage() {
                       className={`text-2xl text-white ${getFontFamily()} flex items-center gap-2`}
                     >
                       <MapPin className="h-5 w-5" />
-                      Lieux découverts
+                      Favoris
                     </CardTitle>
                     <Button
                       className="rounded-full w-8 h-8 p-0 flex items-center justify-center bg-black/30 border border-white/20 hover:bg-white/10"
@@ -570,9 +570,9 @@ export default function ProfilePage() {
                           image: "/locations/shire.jpg",
                         },
                         {
-                          name: "Edoras",
-                          type: "Capitale du Rohan",
-                          image: "/locations/edoras.jpg",
+                          name: "Aragorn",
+                          type: "Homme de l'Ouest",
+                          image: "/avatars/humain/aragorn",
                         },
                       ].map((location, index) => (
                         <div
@@ -605,9 +605,9 @@ export default function ProfilePage() {
                     <div className="mt-6 text-center">
                       <Button
                         className={`text-white ${getButtonClasses()} px-6 rounded-full shadow-lg`}
-                        aria-label="Voir tous les lieux"
+                        aria-label="Voir tous les favoris"
                       >
-                        Voir tous les lieux
+                        Voir tous les favoris
                       </Button>
                     </div>
                   </CardContent>

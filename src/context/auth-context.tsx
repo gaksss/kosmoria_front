@@ -29,7 +29,10 @@ interface AuthProviderProps {
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<{ success: boolean; error?: any }>;
+  login: (
+    email: string,
+    password: string
+  ) => Promise<{ success: boolean; error?: any }>;
   register: (userData: any) => Promise<{ success: boolean; error?: any }>;
   logout: () => void;
   isAuthenticated: boolean;
@@ -51,7 +54,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           setUser(userData); // Assure-toi que userData contient toutes les informations nécessaires
         }
       } catch (error) {
-        console.error("Erreur lors de l'initialisation de l'authentification", error);
+        console.error(
+          "Erreur lors de l'initialisation de l'authentification",
+          error
+        );
         AuthService.logout();
       } finally {
         setLoading(false);
